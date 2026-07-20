@@ -1,6 +1,6 @@
 ---
 name: painel-produtos
-description: Esta skill deve ser usada para criar e ATUALIZAR o painel local da Máquina de Produtos Digitais — o dashboard (SQLite + página web) que mostra cada produto na esteira dos 7 passos com link para os entregáveis. Acione sempre que um comando mudar dados de um projeto (/problema, /promessa, /produto, /pagina, /compradores, /lancamento, /validacao, /maquina) ou quando o usuário disser "painel", "dashboard", "meus produtos", "esteira" ou rodar /painel ou /setup.
+description: Esta skill deve ser usada para criar e ATUALIZAR o painel local da Máquina de Produtos Digitais — o dashboard (SQLite + página web) que mostra cada produto na esteira dos 7 passos com link para os entregáveis. Acione sempre que um comando mudar dados de um projeto (/problema, /promessa, /produto, /pagina, /compradores, /lancamento, /validacao, /maquina) ou quando o usuário disser "painel", "dashboard", "meus produtos", "esteira" ou rodar /painel ou /maquina-setup.
 ---
 
 # Painel de produtos (SQLite + página local)
@@ -12,7 +12,7 @@ Arquitetura na RAIZ da pasta conectada:
 - **`painel.html`** — a página do painel (gerada do template). Servida pelo servidor (modo banco) ou aberta por duplo clique (modo arquivo: leitura). O badge no topo indica o modo.
 - **`produtos/[slug]/`** — pasta de cada projeto com os 7 entregáveis (`1-...md` … `7-...md`/`4-pagina-vendas.html`).
 
-## Setup (uma vez, no /setup ou primeiro uso)
+## Setup (uma vez, no /maquina-setup ou primeiro uso)
 
 1. Copie `references/painel-server.py`, `references/iniciar-painel.bat` e `references/iniciar-painel.command` desta skill para a raiz da pasta conectada.
 2. Crie o `maquina.db` com o schema abaixo (via python3/sqlite3 no bash).
