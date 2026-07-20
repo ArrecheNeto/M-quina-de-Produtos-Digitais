@@ -1,7 +1,7 @@
 {
   "name": "maquina-de-produtos-digitais",
   "version": "1.0.0",
-  "description": "COMECE PELO /setup (2 min, uma vez só). Esteira que transforma o que você já sabe num produto digital pronto pra vender — sem API, sem custo, roda na sua própria assinatura do Claude. 7 passos, 7 entregáveis: pesquisa as dores reais do mercado, escolhe a promessa vencedora, monta o produto mínimo, gera a página de vendas, mapeia 10 compradores com abordagem, cria o plano de lançamento e analisa a validação. Tudo administrado num painel local. Rode /maquina para a esteira completa.",
+  "description": "COMECE PELO /maquina-setup (2 min, uma vez só). Esteira que transforma o que você já sabe num produto digital pronto pra vender — sem API, sem custo, roda na sua própria assinatura do Claude. 7 passos, 7 entregáveis: pesquisa as dores reais do mercado, escolhe a promessa vencedora, monta o produto mínimo, gera a página de vendas, mapeia 10 compradores com abordagem, cria o plano de lançamento e analisa a validação. Tudo administrado num painel local. Rode /maquina para a esteira completa.",
   "author": {
     "name": "Helio Arreche"
   },
