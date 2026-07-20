@@ -16,7 +16,7 @@ Tudo é administrado num **painel local** (esteira kanban) que mostra cada produ
 
 ## Começando
 
-1. **/setup** — 2 minutos, uma vez só. Configura seu nome, sua habilidade e instala o painel.
+1. **/maquina-setup** — 2 minutos, uma vez só. Configura seu nome, sua habilidade e instala o painel.
 2. **/maquina [tema]** — roda a esteira inteira, parando pra confirmar com você nos pontos de decisão.
 
 Prefere passo a passo? Rode um comando por vez: `/problema` → `/promessa` → … → `/validacao`.
@@ -31,7 +31,7 @@ Prefere passo a passo? Rode um comando por vez: `/problema` → `/promessa` → 
 
 | Comando | O que faz |
 |---|---|
-| `/setup` | Configura tudo e instala o painel (uma vez) |
+| `/maquina-setup` | Configura tudo e instala o painel (uma vez) |
 | `/maquina` | Roda a esteira completa dos 7 passos |
 | `/problema` | Passo 1 — pesquisa de dores |
 | `/promessa` | Passo 2 — promessa e oferta |
