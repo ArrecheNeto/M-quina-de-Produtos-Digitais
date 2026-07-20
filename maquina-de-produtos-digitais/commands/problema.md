@@ -7,7 +7,7 @@ Execute o **Passo 1 da esteira** seguindo a skill `pesquisa-problemas`.
 
 ## Preparação
 
-1. Leia `maquina-config.json` na pasta conectada. Se não existir, oriente a rodar `/setup`.
+1. Leia `maquina-config.json` na pasta conectada. Se não existir, oriente a rodar `/maquina-setup`.
 2. Defina o tema: use `$ARGUMENTS` se informado; senão, pergunte qual das `habilidades` do config o usuário quer explorar (ou um tema novo).
 
 ## Execução

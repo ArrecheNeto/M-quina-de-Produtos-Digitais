@@ -7,7 +7,7 @@ Rode a **esteira completa** da Máquina de Produtos Digitais: os 7 passos, um ap
 
 ## Preparação
 
-1. Leia `maquina-config.json`. Se não existir, rode o fluxo do `/setup` primeiro (rápido).
+1. Leia `maquina-config.json`. Se não existir, rode o fluxo do `/maquina-setup` primeiro (rápido).
 2. Defina o tema com `$ARGUMENTS` ou perguntando qual habilidade explorar.
 
 ## Execução — encadeada, com checkpoints
