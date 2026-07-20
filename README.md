@@ -4,7 +4,7 @@ Marketplace do plugin **Máquina de Produtos Digitais**, de Helio Arreche.
 
 ## Instalar no Claude Cowork
 
-Adicione este marketplace e instale o plugin `maquina-de-produtos-digitais`. Depois rode **/setup** e **/maquina**.
+Adicione este marketplace e instale o plugin `maquina-de-produtos-digitais`. Depois rode **/maquina-setup** e **/maquina**.
 
 ## O plugin
 
