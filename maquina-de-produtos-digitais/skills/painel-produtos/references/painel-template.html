@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Máquina de Produtos Digitais — Painel</title>
+<script id="dados" type="application/json">__DADOS__</script>
+<style>
+:root{
+  --bg:#0e1016; --card:#171a23; --card2:#1e222d; --line:#2a2f3d;
+  --tx:#e8eaf0; --muted:#9aa2b4; --accent:#7c9cff; --accent2:#5bd6a6;
+  --quente:#ff7a59; --morno:#ffc24b; --frio:#6aa3ff;
+  --serif:"Iowan Old Style",Georgia,serif; --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:14px}
+header{padding:22px 26px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+h1{font-family:var(--serif);font-size:24px;margin:0 0 3px}
+.sub{color:var(--muted);font-size:13px}
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid var(--line)}
+.badge.banco{background:rgba(91,214,166,.13);color:var(--accent2);border-color:transparent}
+.badge.arquivo{background:rgba(255,194,75,.13);color:var(--morno);border-color:transparent}
+#busca{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);color:var(--tx);
+  border-radius:10px;padding:9px 13px;font-size:13px}
+.esteira{display:flex;gap:14px;padding:20px 26px 40px;overflow-x:auto;align-items:flex-start}
+.col{background:var(--card);border:1px solid var(--line);border-radius:14px;min-width:250px;width:250px;flex:0 0 auto;padding:12px}
+.col h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin:2px 0 12px;color:var(--muted);display:flex;justify-content:space-between}
+.col.drop{outline:2px dashed var(--accent);outline-offset:-4px}
+.card{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:10px;cursor:grab}
+.card:active{cursor:grabbing}
+.card .tit{font-weight:700;font-size:14px;margin-bottom:4px}
+.card .meta{color:var(--muted);font-size:12px;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+.chip{font-size:11px;padding:3px 8px;border-radius:7px;background:rgba(124,156,255,.12);color:var(--accent)}
+.arqs{display:flex;flex-wrap:wrap;gap:5px}
+.arqs a{font-size:11px;text-decoration:none;color:var(--muted);border:1px solid var(--line);
+  border-radius:6px;padding:3px 7px;transition:.15s}
+.arqs a:hover{color:var(--tx);border-color:var(--accent)}
+.veredito{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;margin-top:8px}
+.v-validado{background:rgba(91,214,166,.15);color:var(--accent2)}
+.v-ajustar{background:rgba(255,194,75,.15);color:var(--morno)}
+.v-descartar{background:rgba(255,122,89,.15);color:var(--quente)}
+.vazio{color:var(--muted);font-size:12px;padding:8px 4px}
+.rodape{text-align:center;color:var(--muted);font-size:12px;padding:0 0 30px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Máquina de Produtos Digitais</h1>
+  <div class="sub">Sua esteira: do que você sabe até o produto validado.</div>
+  <div class="topbar">
+    <span id="modo" class="badge arquivo">modo leitura</span>
+    <span class="sub" id="atualizado"></span>
+    <input id="busca" placeholder="Buscar produto, público, formato…">
+  </div>
+</header>
+<div class="esteira" id="esteira"></div>
+<div class="rodape">Painel local — a fonte da verdade é o <b>maquina.db</b>. Duplo clique em <b>iniciar-painel</b> pra editar e arrastar.</div>
+
+<script>
+var ETAPAS=[
+  {k:'problema',   t:'1 · Problema'},
+  {k:'promessa',   t:'2 · Promessa'},
+  {k:'produto',    t:'3 · Produto'},
+  {k:'pagina',     t:'4 · Página'},
+  {k:'compradores',t:'5 · Compradores'},
+  {k:'lancamento', t:'6 · Lançamento'},
+  {k:'validacao',  t:'7 · Validação'},
+  {k:'validado',   t:'✓ Validado'}
+];
+var ARQS=[
+  {campo:'problema',   arq:'1-pesquisa-problemas.md', rot:'1 Pesquisa'},
+  {campo:'promessa',   arq:'2-promessa-oferta.md',    rot:'2 Oferta'},
+  {campo:'produto',    arq:'3-produto-minimo.md',     rot:'3 Produto'},
+  {campo:'paginaArq',  arq:'4-pagina-vendas.html',    rot:'4 Página'},
+  {campo:'compradores',arq:'5-compradores.md',        rot:'5 Compradores'},
+  {campo:'lancamento', arq:'6-lancamento.md',         rot:'6 Lançamento'},
+  {campo:'validacao',  arq:'7-validacao.md',          rot:'7 Validação'}
+];
+var MODO_BANCO=false, PROJ=[];
+
+function embutido(){try{return JSON.parse(document.getElementById('dados').textContent)}catch(e){return{projetos:[]}}}
+
+function boot(){
+  fetch('/api/projetos').then(function(r){return r.json()}).then(function(d){
+    MODO_BANCO=true; PROJ=d;
+    document.getElementById('modo').className='badge banco';
+    document.getElementById('modo').textContent='● banco conectado';
+    var e=embutido(); document.getElementById('atualizado').textContent='Atualizado '+(e.atualizado||'');
+    render();
+  }).catch(function(){
+    var e=embutido(); PROJ=e.projetos||[];
+    document.getElementById('atualizado').textContent='Atualizado '+(e.atualizado||'')+' · modo leitura';
+    render();
+  });
+}
+
+function veredito(p){
+  var v=(p.validacao||'').toUpperCase();
+  if(v.indexOf('VALIDADO')>=0)return{c:'v-validado',t:'VALIDADO'};
+  if(v.indexOf('AJUSTAR')>=0) return{c:'v-ajustar',t:'AJUSTAR'};
+  if(v.indexOf('DESCARTAR')>=0)return{c:'v-descartar',t:'DESCARTAR'};
+  return null;
+}
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function cardHTML(p){
+  var chips='';
+  if(p.formato)chips+='<span class="chip">'+esc(p.formato)+'</span>';
+  if(p.preco)chips+='<span class="chip">R$ '+esc(String(p.preco))+'</span>';
+  if(p.publico)chips+='<span class="chip">'+esc(p.publico.slice(0,28))+'</span>';
+  var arqs='';
+  ARQS.forEach(function(a){
+    if(p[a.campo]){arqs+='<a href="produtos/'+encodeURIComponent(p.slug)+'/'+a.arq+'" target="_blank">'+a.rot+'</a>';}
+  });
+  var v=veredito(p);
+  var vb=v?'<div class="veredito '+v.c+'">'+v.t+'</div>':'';
+  return '<div class="card" draggable="true" data-slug="'+esc(p.slug)+'">'
+    +'<div class="tit">'+esc(p.titulo||p.slug)+'</div>'
+    +'<div class="meta">'+esc(p.habilidade||'')+'</div>'
+    +'<div class="chips">'+chips+'</div>'
+    +'<div class="arqs">'+(arqs||'<span class="vazio">sem entregáveis ainda</span>')+'</div>'
+    +vb+'</div>';
+}
+
+function render(){
+  var q=(document.getElementById('busca').value||'').toLowerCase();
+  var lista=PROJ.filter(function(p){
+    if(!q)return true;
+    return (JSON.stringify(p)||'').toLowerCase().indexOf(q)>=0;
+  });
+  var wrap=document.getElementById('esteira'); wrap.innerHTML='';
+  ETAPAS.forEach(function(et){
+    var itens=lista.filter(function(p){return (p.etapa||'problema')===et.k;});
+    var col=document.createElement('div');
+    col.className='col'; col.dataset.etapa=et.k;
+    col.innerHTML='<h3><span>'+et.t+'</span><span>'+itens.length+'</span></h3>'
+      +(itens.length?itens.map(cardHTML).join(''):'<div class="vazio">—</div>');
+    wrap.appendChild(col);
+  });
+  if(MODO_BANCO)ligarDrag();
+}
+
+function ligarDrag(){
+  var arrastando=null;
+  document.querySelectorAll('.card').forEach(function(c){
+    c.addEventListener('dragstart',function(){arrastando=c.dataset.slug;});
+  });
+  document.querySelectorAll('.col').forEach(function(col){
+    col.addEventListener('dragover',function(e){e.preventDefault();col.classList.add('drop');});
+    col.addEventListener('dragleave',function(){col.classList.remove('drop');});
+    col.addEventListener('drop',function(e){
+      e.preventDefault(); col.classList.remove('drop');
+      if(!arrastando)return;
+      var nova=col.dataset.etapa;
+      var p=PROJ.filter(function(x){return x.slug===arrastando})[0];
+      if(p&&p.etapa!==nova){
+        p.etapa=nova;
+        fetch('/api/projetos/'+encodeURIComponent(arrastando),{method:'PUT',
+          headers:{'Content-Type':'application/json'},body:JSON.stringify({etapa:nova})}).then(render);
+      }
+      arrastando=null;
+    });
+  });
+}
+
+document.getElementById('busca').addEventListener('input',render);
+boot();
+</script>
+</body>
+</html>
